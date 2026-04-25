@@ -1,105 +1,109 @@
-# 🌳 Huffman Coding Visualizer
-### *A Deep-Dive Educational Tool for Algorithmic Mechanics*
+# File Squeezer: Huffman Coding Compressor
 
-This application is a comprehensive educational platform designed to deconstruct the **Huffman Coding algorithm**. Unlike standard implementations, every component—from the priority queue to the bit-traversal—is manually implemented to demonstrate a transparent, ground-up understanding of data compression.
+A Python-based lossless file compression utility that uses the **Huffman Coding Algorithm**. This project was developed for a **Design and Analysis of Algorithms** course to demonstrate greedy programming and efficient data structures.
 
---------------------------------
+## 💡 How it Works
+Huffman coding is a greedy algorithm that assigns variable-length binary codes to characters based on their frequencies. 
+1. **Frequency Analysis**: The program scans the input file and counts occurrences of each byte.
+2. **Tree Construction**: Using a **Priority Queue (Min-Heap)**, it builds a binary tree where the most frequent characters are closer to the root.
+3. **Encoding**: Shorter bit-sequences are assigned to frequent characters, and longer sequences to rare ones.
+4. **Serialization**: The frequency table is stored in the file header so the "squeezer" can reconstruct the tree for decompression.
 
-## ✨ Key Features
 
-### 🎮 Interactive Visualization
-* **Step-by-Step Execution:** Full control with `Previous` and `Next` navigation.
-* **Live Tree Construction:** Real-time rendering of the Huffman tree and internal node merging.
-* **Memory State:** Visualizes the **Heap/Priority Queue** and **Frequency Tables** as they change.
-* **Codec Testing:** Integrated panel to encode and decode custom text using your generated tree.
-
-### 📖 Teaching & Theory
-* **Logic Flow:** A dedicated window providing a technical walkthrough and pseudocode for every phase.
-* **Formal Proofs:** Deep-dive into the mathematical derivation of Big O time and space complexity.
-* **Dynamic Feedback:** Contextual explanations that update based on the current algorithm step.
-
-### 🧪 Performance Driver (The "Chart of Truth")
-* **Scalability Testing:** Automated benchmarks for $n$ = 10 to 100,000.
-* **Empirical vs. Theoretical:** Real-time plotting of actual execution time (blue) against the theoretical $O(n \log n)$ curve (red dashed).
-* **CSV Export:** Save raw performance data for further academic analysis.
 
 ---
 
-## 🛠 Manual Implementation ("No Black Boxes")
-
-To ensure total transparency, this project avoids high-level "magic" functions or built-in libraries like `heapq`.
-
-| Operation | Manual Implementation Detail |
-| :--- | :--- |
-| **Frequency Map** | Linear search through keys (no `.get()` or `defaultdict`) |
-| **Priority Queue** | Custom Min-Heap with manual bubble-up/down logic |
-| **Encoding** | Character-by-character concatenation (no `.join()`) |
-| **Decoding** | Bit-by-bit tree traversal with manual index tracking |
-| **Sorting** | Custom Bubble Sort implementation for UI tables |
+## 🚀 Features
+* **Lossless Compression**: Perfectly reconstructs original files bit-by-bit.
+* **Binary Support**: Not just for `.txt` files! It can compress images, PDFs, and executables by processing raw bytes.
+* **Efficient Header**: Uses Python's `struct` module to write a compact binary header.
+* **Dynamic Padding**: Automatically handles bit-alignment to ensure files stay byte-aligned.
 
 ---
 
-## 📊 Complexity Analysis
+## 🛠️ Usage
 
-### Time Complexity
-| Phase | Average Case | Worst Case |
-| :--- | :--- | :--- |
-| **Frequency Count** | $O(n)$ | $O(n^2)$ |
-| **Tree Construction** | $O(k \log k)$ | $O(k \log k)$ |
-| **Encoding/Decoding** | $O(n)$ | $O(n \cdot k)$ |
-| **Total Pipeline** | **$O(n \log k)$** | **$O(n^2)$** |
+### Compression
+To "squeeze" a file:
+```bash
+python Huffman.py compress <input_file> <output_file>
+```
+*Example:* `python Huffman.py compress document.pdf document.huff`
 
-> $n$: Length of input text | $k$: Number of unique characters.
-
-### Space Complexity
-| Component | Complexity |
-| :--- | :--- |
-| Huffman Tree / Map | $O(k)$ |
-| Encoded String | $O(n \cdot L)$ |
-| **Total Space** | **$O((n + k) \cdot L)$** |
+### Decompression
+To restore a file:
+```bash
+python Huffman.py decompress <compressed_file> <restored_file>
+```
+*Example:* `python Huffman.py decompress document.huff restored_document.pdf`
 
 ---
 
-## 🚀 Getting Started
+## 📊 Performance Metrics
+The program outputs the following statistics after each operation:
+* **Original Size**: Size in bytes before compression.
+* **Compressed Size**: Size in bytes after compression (including header).
+* **Compression Ratio**: The efficiency of the "squeeze" (lower is better).
+
+---
+
+## 🏗️ Technical Implementation Details
+* **Language**: Python 3.x
+* **Core Libraries**: 
+    * `heapq`: For the Min-Heap priority queue.
+    * `struct`: For packing binary data into the file header.
+    * `os`: For file size calculations and path handling.
+* **Complexity**: 
+    * **Time**: $O(n \log n)$ where $n$ is the number of unique symbols.
+    * **Space**: $O(n)$ to store the tree and frequency map.
+---
+
+## 🛠️ Getting Started
 
 ### Prerequisites
-* **Python 3.6+**
-* **Tkinter** (included in the Python Standard Library)
+* **Python 3.6 or higher**: This project uses type hinting and the `struct` module, which are standard in modern Python installations.
+* No external dependencies (like `pip install`) are required!
 
-### Installation & Run
-1. Clone the repository:
+### Setup
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/huffman-visualizer.git
+   git clone https://github.com/your-username/file-squeezer-huffman.git
+   cd file-squeezer-huffman
    ```
-2. Navigate to the directory and run:
-   ```bash
-   python huffman_gui.py
-   ```
+2. **Prepare a test file:**
+   Create a simple text file named `test.txt` or use any existing file (image, pdf, etc.).
+
+---
+
+## 🖥️ How to Run
+
+The script operates via the command line. Open your terminal or command prompt and use the following syntax:
+
+### 1. Compressing a File
+This will take your original file and "squeeze" it into a `.huff` file.
+```bash
+python Huffman.py compress test.txt test.huff
+```
+
+### 2. Decompressing a File
+This reads the `.huff` file and reconstructs the original data.
+```bash
+python Huffman.py decompress test.huff restored_test.txt
+```
+
+### 3. Verification
+You can verify the project worked by checking if the original and restored files are identical:
+* **Windows (PowerShell):** `Compare-Object -ReferenceObject (Get-Content test.txt) -DifferenceObject (Get-Content restored_test.txt)`
+* **Linux/Mac:** `diff test.txt restored_test.txt`
 
 ---
 
 ## 📂 Project Structure
-```text
-huffman_gui.py
-├── 🏗️ HuffmanNode          # Tree node data structure
-├── 📊 build_frequency_map  # Manual frequency counting logic
-├── 🌲 build_huffman_tree   # Custom heap & tree construction
-├── 🔐 generate_codes       # Recursive prefix-code mapping
-├── ⚡ encode/decode_manual  # Core manual traversal logic
-└── 🖥️ HuffmanGUI           # Primary UI Controller
-    ├── LogicFlowWindow     # Algorithm walkthrough
-    ├── BigOProofWindow      # Complexity derivation
-    └── DriverWindow        # Performance benchmarking & plotting
-```
+* `Huffman.py` — The main source code containing the `HuffmanNode` class and compression logic.
+* `README.md` — Documentation and instructions.
+* `*.huff` — (Generated) The compressed binary output.
 
 ---
 
-## 🎓 Educational Objectives
-This tool was built to help students master:
-1. **Greedy Algorithms:** Understanding the optimal substructure of Huffman trees.
-2. **Data Structures:** Implementing heaps and trees without abstraction layers.
-3. **Prefix Codes:** Why no code is a prefix of another.
-4. **Empirical Analysis:** Proving that theoretical complexity matches real-world performance.
-
----
-*Created for students, by a student of algorithms.*
+## ⚖️ License
+This project is for educational purposes under the Design Algorithm course. Feel free to use and modify!
